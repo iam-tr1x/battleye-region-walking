@@ -2,10 +2,10 @@
 
 namespace BE
 {
-	std::vector<RegionData> SearchMemoryRegions(void* funcToSkip)
+	std::vector<std::pair<RegionType, MEMORY_BASIC_INFORMATION>> SearchMemoryRegions(const void* funcToSkip)
 	{
 		MEMORY_BASIC_INFORMATION MBI = {};
-		std::vector<RegionData> tempRegionData = {};
+		std::vector<std::pair<RegionType, MEMORY_BASIC_INFORMATION>> tempRegionData = {};
 
 		for (auto it = MBI.BaseAddress; VirtualQuery(it, &MBI, sizeof(MEMORY_BASIC_INFORMATION)); *reinterpret_cast<std::uint64_t*>(&it) += MBI.RegionSize)
 		{
@@ -21,21 +21,21 @@ namespace BE
 			{
 				if (MBI.Type == MEM_PRIVATE || MBI.Type == MEM_MAPPED)
 				{
-					if (MBI.RegionSize >= 0x11000
-						|| MBI.RegionSize >= 0x4000
-						&& (reinterpret_cast<std::int64_t>(MBI.BaseAddress) & 0xFF0000000000) != 0x7F0000000000
-						&& (reinterpret_cast<std::int64_t>(MBI.BaseAddress) & 0xFFF000000000) != 0x7F000000000
-						&& MBI.RegionSize != 0x10000
-						&& (reinterpret_cast<std::int64_t>(MBI.BaseAddress) & 0xFFFFF0000000i64) != 0x70000000
-						&& (MBI.BaseAddress != reinterpret_cast<void*>(0x3E0000) || MBI.RegionSize != 0xF000)
-						&& (MBI.BaseAddress != reinterpret_cast<void*>(0x3F0000) || MBI.RegionSize != 0x4000))
+					if (MBI.RegionSize >= 0x11000 ||
+						MBI.RegionSize >= 0x4000 &&
+						(reinterpret_cast<std::int64_t>(MBI.BaseAddress) & 0xFF0000000000) != 0x7F0000000000 &&
+						(reinterpret_cast<std::int64_t>(MBI.BaseAddress) & 0xFFF000000000) != 0x7F000000000 &&
+						MBI.RegionSize != 0x10000 &&
+						(reinterpret_cast<std::int64_t>(MBI.BaseAddress) & 0xFFFFF0000000) != 0x70000000 &&
+						(MBI.BaseAddress != reinterpret_cast<void*>(0x3E0000) || MBI.RegionSize != 0xF000) &&
+						(MBI.BaseAddress != reinterpret_cast<void*>(0x3F0000) || MBI.RegionSize != 0x4000))
 					{
-						tempRegionData.push_back({ RegionType::MEMORY_INVALID, MBI });
-						continue;
+						tempRegionData.emplace_back(std::pair{ MEMORY_INVALID, MBI });
+;						continue;
 					}
 				}
 			}
-			tempRegionData.push_back({ RegionType::MEMORY_VALID, MBI });
+			tempRegionData.emplace_back(std::pair{ MEMORY_VALID, MBI });
 		}
 
 		return tempRegionData;

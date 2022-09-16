@@ -9,11 +9,5 @@ namespace BE
 		MEMORY_INVALID
 	};
 
-	struct RegionData
-	{
-		RegionType regionType = {};
-		MEMORY_BASIC_INFORMATION regionMBI = {};
-	};
-
-	std::vector<RegionData> SearchMemoryRegions(void* funcToSkip);
+	std::vector<std::pair<RegionType, MEMORY_BASIC_INFORMATION>> SearchMemoryRegions(const void* funcToSkip);
 }
