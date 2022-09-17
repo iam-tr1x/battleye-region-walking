@@ -5,7 +5,7 @@ namespace BE
 	std::vector<std::pair<RegionType, MEMORY_BASIC_INFORMATION>> SearchMemoryRegions(const void* funcToSkip)
 	{
 		MEMORY_BASIC_INFORMATION MBI = {};
-		std::vector<std::pair<RegionType, MEMORY_BASIC_INFORMATION>> tempRegionData = {};
+		std::vector<std::pair<RegionType, MEMORY_BASIC_INFORMATION>> walkedRegions = {};
 
 		for (auto it = MBI.BaseAddress; VirtualQuery(it, &MBI, sizeof(MEMORY_BASIC_INFORMATION)); *reinterpret_cast<std::uint64_t*>(&it) += MBI.RegionSize)
 		{
@@ -30,14 +30,14 @@ namespace BE
 						(MBI.BaseAddress != reinterpret_cast<void*>(0x3E0000) || MBI.RegionSize != 0xF000) &&
 						(MBI.BaseAddress != reinterpret_cast<void*>(0x3F0000) || MBI.RegionSize != 0x4000))
 					{
-						tempRegionData.emplace_back(std::pair{ MEMORY_INVALID, MBI });
+						walkedRegions.emplace_back(std::pair{ MEMORY_INVALID, MBI });
 ;						continue;
 					}
 				}
 			}
-			tempRegionData.emplace_back(std::pair{ MEMORY_VALID, MBI });
+			walkedRegions.emplace_back(std::pair{ MEMORY_VALID, MBI });
 		}
 
-		return tempRegionData;
+		return walkedRegions;
 	}
 }

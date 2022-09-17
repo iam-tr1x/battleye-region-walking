@@ -7,7 +7,7 @@ int main()
 	{
 		switch (key)
 		{
-		    case BE::RegionType::MEMORY_VALID:
+			case BE::RegionType::MEMORY_VALID:
 			{
 				std::printf("Valid Memory Region: %p\n", value.BaseAddress);
 				break;
