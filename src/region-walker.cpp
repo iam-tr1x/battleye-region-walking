@@ -7,7 +7,7 @@ namespace BE
 		MEMORY_BASIC_INFORMATION MBI = {};
 		std::vector<std::pair<RegionType, MEMORY_BASIC_INFORMATION>> walkedRegions = {};
 
-		for (auto it = MBI.BaseAddress; VirtualQuery(it, &MBI, sizeof(MEMORY_BASIC_INFORMATION)); *reinterpret_cast<std::uint64_t*>(&it) += MBI.RegionSize)
+		for (auto it = MBI.BaseAddress; VirtualQuery(it, &MBI, sizeof(MEMORY_BASIC_INFORMATION)); *reinterpret_cast<std::int64_t*>(&it) += MBI.RegionSize)
 		{
 			if (MBI.State == MEM_COMMIT &&
 				(MBI.Protect == PAGE_EXECUTE || MBI.Protect == PAGE_EXECUTE_READ || MBI.Protect == PAGE_EXECUTE_READWRITE &&
@@ -31,7 +31,7 @@ namespace BE
 						(MBI.BaseAddress != reinterpret_cast<void*>(0x3F0000) || MBI.RegionSize != 0x4000))
 					{
 						walkedRegions.emplace_back(std::pair{ MEMORY_INVALID, MBI });
-;						continue;
+						continue;
 					}
 				}
 			}
