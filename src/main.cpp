@@ -3,7 +3,7 @@
 
 int main()
 {
-	for (const auto& [key, value] : BE::SearchMemoryRegions(main))
+	for (const auto& [key, value] : BE::SearchMemoryRegions(&main))
 	{
 		switch (key)
 		{
@@ -15,11 +15,6 @@ int main()
 			case BE::RegionType::MEMORY_INVALID:
 			{
 				std::printf("Invalid Memory Region: %p\n", value.BaseAddress);
-				break;
-			}
-			default:
-			{
-				std::printf("Unknown Memory Region Type!\n");
 				break;
 			}
 		}
