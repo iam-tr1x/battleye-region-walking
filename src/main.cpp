@@ -5,20 +5,8 @@ int main()
 {
 	for (const auto& [key, value] : BE::SearchMemoryRegions(&main))
 	{
-		switch (key)
-		{
-			case BE::RegionType::MEMORY_VALID:
-			{
-				std::printf("Valid Memory Region: %p\n", value.BaseAddress);
-				break;
-			}
-			case BE::RegionType::MEMORY_INVALID:
-			{
-				std::printf("Invalid Memory Region: %p\n", value.BaseAddress);
-				break;
-			}
-		}
+		std::printf("%s Memory Region -> %p\n", key == BE::MEMORY_VALID ? "Valid" : "Invalid", value.BaseAddress);
 	}
 
-	return 0;
+	return std::getchar();
 }
